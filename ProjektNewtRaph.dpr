@@ -5,7 +5,8 @@ uses
   main in 'main.pas' {Okno},
   IntervalArithmetic32and64 in 'IntervalArithmetic32and64.pas',
   uTExtendedX87 in 'uTExtendedX87.pas',
-  NewtRaph in 'NewtRaph.pas';
+  NewtRaph in 'NewtRaph.pas',
+  NewtRaphInterval in 'NewtRaphInterval.pas';
 
 {$R *.res}
 
