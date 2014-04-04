@@ -21,11 +21,11 @@ uses
 function f(x : interval) : interval;
 var z : interval;
 begin
-  MessageBox(0, 'Hello World!', 'Hello', MB_OK + MB_ICONINFORMATION);
+//  MessageBox(0, 'Hello World!', 'Hello', MB_OK + MB_ICONINFORMATION);
 //  z :=x*x;
 //  f := z*(z-5)+4;
-  z := imul(x,x);
-  f := imul(z,iadd(isub(z,int_read('5')),int_read('4')));
+  z := imul(x,x);   // 4.84
+  f := iadd(imul(z,isub(z,int_read('5'))),int_read('4'));  // 3.2256
 end;
 
 function df(x : interval) : interval;

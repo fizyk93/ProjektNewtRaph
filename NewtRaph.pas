@@ -82,7 +82,7 @@ function NewtonRaphson (var x     : Extended;
 {        directive or compiled in the $F+ state.                            }
 {                                                                           }
 {---------------------------------------------------------------------------}
-var dfatx,d2fatx,p,v,w,xh,x1,x2 : Extended;
+var dfatx,d2fatx,p,q,r,v,w,xh,x1,x2 : Extended;
 begin
   if mit<1
     then st:=1
@@ -91,10 +91,13 @@ begin
            it:=0;
            repeat
              it:=it+1;
-             fatx:=f(x);
-             dfatx:=df(x);
-             d2fatx:=d2f(x);
-             p:=dfatx*dfatx-2*fatx*d2fatx;
+             fatx:=f(x);      // 3.2256
+             dfatx:=df(x);    // -20.592
+             d2fatx:=d2f(x);  // 48.08
+             p:=dfatx*dfatx;  // 424.030464
+             q:=fatx*d2fatx;  // 155.086848
+             r:=2*q;          // 310.173696
+             p:=p-r;      // 113.856768
              if p<0
                then st:=4
                else if d2fatx=0

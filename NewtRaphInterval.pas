@@ -14,7 +14,7 @@ type Extended = TExtendedX87;
 
 type fx = function (x : interval) : interval;
 
-function NewtonRaphson (var x     : interval;
+function NewtonRaphsonInterval (var x     : interval;
                         f,df,d2f  : fx;
                         mit       : Integer;
                         eps       : Extended;
@@ -24,7 +24,67 @@ function NewtonRaphson (var x     : interval;
 
 implementation
 
-function NewtonRaphson (var x     : interval;
+function iabs(x : interval) : interval;
+begin
+  if (x.a <= 0) and (x.b >= 0) then
+  begin
+    iabs.a := 0;
+    iabs.b := x.b
+  end
+  else if x.b < 0 then
+  begin
+    iabs.a := -x.b;
+    iabs.b := -x.a;
+  end
+  else
+    iabs.a := x.a;
+    iabs.b := x.b;
+  
+end;
+
+function less(x, y : interval) : boolean;
+begin
+  if (x.a < y.a) and (x.b < y.b) then
+  less := true
+  else
+  less := false;
+end;
+
+function lesseq(x,y : interval) : boolean;
+begin
+  if (x.a <= y.a) and (x.b <= y.b) then
+  lesseq := true
+  else
+  lesseq := false;
+  
+end;
+
+function more(x, y: interval) : boolean;
+begin
+  if lesseq(x,y) then
+  more := false
+  else
+  more := true;
+end;
+
+function moreeq(x, y: interval) : boolean;
+begin
+  if less(x,y) then
+  moreeq := false
+  else
+  moreeq := true;
+end;
+
+function isqrt(x : interval) : interval;
+begin
+  isqrt.a := sqrt(x.a);
+  isqrt.b := sqrt(x.b);
+end;
+
+
+
+
+function NewtonRaphsonInterval (var x     : interval;
                         f,df,d2f  : fx;
                         mit       : Integer;
                         eps       : Extended;
@@ -74,7 +134,7 @@ function NewtonRaphson (var x     : interval;
 {        directive or compiled in the $F+ state.                            }
 {                                                                           }
 {---------------------------------------------------------------------------}
-var dfatx,d2fatx,p,v,w,xh,x1,x2 : interval;
+var dfatx,d2fatx,p,q,r,v,w,xh,x1,x2 : interval;
 begin
   if mit<1
     then st:=1
@@ -83,37 +143,43 @@ begin
            it:=0;
            repeat
              it:=it+1;
-             fatx:=f(x);
-             dfatx:=df(x);
-             d2fatx:=d2f(x);
+             fatx:=f(x); //18.5856
+             dfatx:=df(x); //20.592
+             d2fatx:=d2f(x); //48.08
 //             p:=dfatx*dfatx-2*fatx*d2fatx;
-             p := isub(imul(dfatx,dfatx),imul(int_read('2'),imul(fatx,d2fatx)));
+
+             p:=imul(dfatx,dfatx);  // 424.030464
+             q:= imul(fatx,d2fatx); // 893.595648
+             r:=imul(int_read('2'),q); // 1787,191296
+             p := isub(p,r);  // -1364.160932
              if (p.a<0) and (p.b<0)
                then st:=4
-               else if d2fatx=int_read('0')
+               else if (d2fatx.a=0) and (d2fatx.b=0)
                       then st:=2
                       else begin
                              xh:=x;
-                             w:=abs(xh);
-                             p:=sqrt(p);
-                             x1:=x-(dfatx-p)/d2fatx;
-                             x2:=x-(dfatx+p)/d2fatx;
-                             if abs(x2-xh)>abs(x1-xh)
+                             w:=iabs(xh);
+                             p:=isqrt(p);
+//                             x1:=x-(dfatx-p)/d2fatx;
+                             x1 := isub(x,idiv(isub(dfatx,p),d2fatx));
+//                             x2:=x-(dfatx+p)/d2fatx;
+                             x2 := isub(x,idiv(iadd(dfatx,p),d2fatx));
+                             if more(iabs(isub(x2,xh)),iabs(isub(x1,xh)))
                                then x:=x1
                                else x:=x2;
-                             v:=abs(x);
-                             if v<w
+                             v:=iabs(x);
+                             if less(v,w)
                                then v:=w;
-                             if v=0
+                             if (v.a=0) and (v.b=0)
                                then st:=0
-                               else if abs(x-xh)/v<=eps
+                               else if (idiv(iabs(isub(x,xh)),v).a <= eps) and (idiv(iabs(isub(x,xh)),v).b <= eps)
                                       then st:=0
                            end
            until (it=mit) or (st<>3)
          end;
   if (st=0) or (st=3)
     then begin
-           NewtonRaphson:=x;
+           NewtonRaphsonInterval:=x;
            fatx:=f(x)
          end
 end;

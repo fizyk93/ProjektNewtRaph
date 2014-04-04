@@ -23,8 +23,8 @@ function f(x : Extended) : Extended;
 var z : Extended;
 begin
 //  MessageBox(0, 'Hello World!', 'Hello', MB_OK + MB_ICONINFORMATION);
-  z :=x*x;
-  f := z*(z-5)+4;
+  z :=x*x; // 4.84
+  f := z*(z-5)+4;  // 3.2256
 end;
 
 function df(x : Extended) : Extended;
