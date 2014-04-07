@@ -31,6 +31,9 @@ type
     RozwEdit: TEdit;
     FloatRadio: TRadioButton;
     IntRadio: TRadioButton;
+    OdpLabel: TLabel;
+    SzerLabel: TLabel;
+    SzerEdit: TEdit;
     procedure PrzeliczClick(Sender: TObject);
     procedure IntRadioClick(Sender: TObject);
     procedure FloatRadioClick(Sender: TObject);
@@ -70,9 +73,10 @@ var
   x, fatx, eps : Extended;
   mit, it, st : Integer;
   intvl : interval;
-  xcv : Integer;
+  ans : interval;
 begin
   DLL := LoadLibrary(PChar(NazwaEdit.text)); // za³adowanie pliku
+  SzerEdit.Text := '';
   try
 
     if FloatRadio.checked then
@@ -106,7 +110,9 @@ begin
       mit := StrToInt(mitEdit.Text);
       eps := StrToFloat(epsEdit.Text);
       try
-        RozwEdit.Text := intervalToString(NewtonRaphsonInterval(xInt, fInt, dfInt, d2fInt, mit, eps, fatxInt, it, st));
+        ans := NewtonRaphsonInterval(xInt, fInt, dfInt, d2fInt, mit, eps, fatxInt, it, st);
+        RozwEdit.Text := intervalToString(ans);
+        SzerEdit.Text := FloatToStr(int_width(ans));
       except
         MessageBox(0, 'Podano niepoprawne dane!', 'B³¹d', MB_OK + MB_ICONINFORMATION);
       end;
