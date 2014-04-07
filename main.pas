@@ -10,7 +10,6 @@ uses
 type
   TOkno = class(TForm)
     Przelicz: TButton;
-    testEdit: TEdit;
     DLLGroup: TGroupBox;
     ArytmetykaGroup: TRadioGroup;
     Nazwa: TLabel;
@@ -87,7 +86,12 @@ begin
       x :=  StrToFloat(x0Edit.Text);
       mit := StrToInt(mitEdit.Text);
       eps := StrToFloat(epsEdit.Text);
-      RozwEdit.Text := FloatToStr(NewtonRaphson (x, f, df, d2f, mit, eps, fatx, it, st));
+      try
+        RozwEdit.Text := FloatToStr(NewtonRaphson (x, f, df, d2f, mit, eps, fatx, it, st));
+      except
+         MessageBox(0, 'Podano niepoprawne dane!', 'B³¹d', MB_OK + MB_ICONINFORMATION);
+      end;
+
     end
     else
     begin
@@ -101,10 +105,13 @@ begin
       xInt :=  int_read(x0Edit.Text);
       mit := StrToInt(mitEdit.Text);
       eps := StrToFloat(epsEdit.Text);
-      RozwEdit.Text := intervalToString(NewtonRaphsonInterval(xInt, fInt, dfInt, d2fInt, mit, eps, fatxInt, it, st));
-      intvl.a := 1.32;
-      intvl.b := 3.243;
-      testEdit.Text := intervalToString(iexp(int_read('2'),xcv));
+      try
+        RozwEdit.Text := intervalToString(NewtonRaphsonInterval(xInt, fInt, dfInt, d2fInt, mit, eps, fatxInt, it, st));
+      except
+        MessageBox(0, 'Podano niepoprawne dane!', 'B³¹d', MB_OK + MB_ICONINFORMATION);
+      end;
+
+
     end;
   finally
     FreeLibrary(DLL);
