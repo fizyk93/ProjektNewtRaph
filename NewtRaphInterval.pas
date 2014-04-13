@@ -154,7 +154,7 @@ begin
              p := isub(p,r);  // -1364.160932
              if (p.a<0) and (p.b<0)
                then st:=4
-               else if (d2fatx.a=0) and (d2fatx.b=0)
+               else if (d2fatx.a<=0) and (d2fatx.b>=0)
                       then st:=2
                       else begin
                              xh:=x;

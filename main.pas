@@ -34,6 +34,7 @@ type
     OdpLabel: TLabel;
     SzerLabel: TLabel;
     SzerEdit: TEdit;
+    x0Edit2: TEdit;
     procedure PrzeliczClick(Sender: TObject);
     procedure IntRadioClick(Sender: TObject);
     procedure FloatRadioClick(Sender: TObject);
@@ -59,11 +60,15 @@ implementation
 procedure TOkno.FloatRadioClick(Sender: TObject);
 begin
   NazwaEdit.Text := 'funkcje.dll';
+  x0Edit2.Visible := false;
+  x0Edit.Width := 136;
 end;
 
 procedure TOkno.IntRadioClick(Sender: TObject);
 begin
   NazwaEdit.Text := 'funkcjeInt.dll';
+  x0Edit2.Visible := true;
+  x0Edit.Width := 68;
 end;
 
 procedure TOkno.PrzeliczClick(Sender: TObject);
@@ -106,7 +111,12 @@ begin
 
       if @test = nil then raise Exception.Create('Nie mo¿na za³adowaæ procedury');
 
-      xInt :=  int_read(x0Edit.Text);
+      if x0Edit2.Text = '' then xInt :=  int_read(x0Edit.Text)
+      else
+      begin
+        xInt.a :=  int_read(x0Edit.Text).a;
+        xInt.b := int_read(x0Edit2.Text).b;
+      end;
       mit := StrToInt(mitEdit.Text);
       eps := StrToFloat(epsEdit.Text);
       try
