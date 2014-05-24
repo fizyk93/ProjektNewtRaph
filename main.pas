@@ -35,14 +35,19 @@ type
     SzerLabel: TLabel;
     SzerEdit: TEdit;
     x0Edit2: TEdit;
+    ZaladujDLL: TButton;
     procedure PrzeliczClick(Sender: TObject);
     procedure IntRadioClick(Sender: TObject);
     procedure FloatRadioClick(Sender: TObject);
+    procedure ZaladujDLLClick(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
   end;
+
+  ELoadLibrary = class(Exception);
+  ELoadDLLFunction = class(Exception);
 
 var
   Okno: TOkno;
@@ -62,6 +67,7 @@ begin
   NazwaEdit.Text := 'funkcje.dll';
   x0Edit2.Visible := false;
   x0Edit.Width := 136;
+  Przelicz.Enabled := false;
 end;
 
 procedure TOkno.IntRadioClick(Sender: TObject);
@@ -69,6 +75,7 @@ begin
   NazwaEdit.Text := 'funkcjeInt.dll';
   x0Edit2.Visible := true;
   x0Edit.Width := 68;
+  Przelicz.Enabled := false;
 end;
 
 procedure TOkno.PrzeliczClick(Sender: TObject);
@@ -82,24 +89,16 @@ var
   err : Integer;
   tmp, left, right : string;
 begin
-  DLL := LoadLibrary(PChar(NazwaEdit.text)); // za³adowanie pliku
+
   SzerEdit.Text := '';
-  try
 
     if FloatRadio.checked then
     begin
-      @f := GetProcAddress(DLL, PWideChar(fEdit.Text));  // pobranie wskaŸnika do procedury
-      @df := GetProcAddress(DLL, PWideChar(dfEdit.Text));
-      @d2f := GetProcAddress(DLL, PWideChar(d2fEdit.Text));
-      @test := GetProcAddress(DLL, 'test');  // pobranie wskaŸnika do procedury
-      @blah := GetProcAddress(DLL, 'blah');
-
 //      x :=  StrToFloat(x0Edit.Text);  //val
 //      mit := StrToInt(mitEdit.Text);
 //      eps := StrToFloat(epsEdit.Text);
 
       Val(x0Edit.Text, x, err);
-
       Val(mitEdit.Text, mit, err);
       Val(epsEdit.Text, eps, err);
 
@@ -110,19 +109,12 @@ begin
         ShowMessage(IntToStr(st));
       except
          ShowMessage(IntToStr(st));
-         MessageBox(0, 'Podano niepoprawne dane!', 'B³¹d', MB_OK + MB_ICONINFORMATION);
+         MessageBox(0, PWideChar('Podano niepoprawne dane!' + sLineBreak + 'Numer b³êdu: st = ' + IntToStr(st)), 'B³¹d', MB_OK + MB_ICONINFORMATION);
       end;
 
     end
     else
     begin
-      @fInt := GetProcAddress(DLL, PWideChar(fEdit.Text));  // pobranie wskaŸnika do procedury
-      @dfInt := GetProcAddress(DLL, PWideChar(dfEdit.Text));
-      @d2fInt := GetProcAddress(DLL, PWideChar(d2fEdit.Text));
-      @test := GetProcAddress(DLL, 'test');  // pobranie wskaŸnika do procedury
-
-      if @test = nil then raise Exception.Create('Nie mo¿na za³adowaæ procedury');
-
       if x0Edit2.Text = '' then xInt :=  int_read(x0Edit.Text)
       else
       begin
@@ -140,14 +132,48 @@ begin
         Str(int_width(ans):25, tmp);
         SzerEdit.Text := tmp;
       except
+        MessageBox(0, PWideChar('Podano niepoprawne dane!' + sLineBreak + 'Numer b³êdu: st = ' + IntToStr(st)), 'B³¹d', MB_OK + MB_ICONINFORMATION);
+      end;
+    end;
+end;
 
-        MessageBox(0, 'Podano niepoprawne dane!', 'B³¹d', MB_OK + MB_ICONINFORMATION);
+procedure TOkno.ZaladujDLLClick(Sender: TObject);
+begin
+  try
+    if DLL > 0 then FreeLibrary(DLL);
+    DLL := LoadLibrary(PChar(NazwaEdit.text)); // za³adowanie pliku
+    if DLL = 0 then raise ELoadLibrary.Create('x');
+    Przelicz.Enabled := true;
+
+    if FloatRadio.checked then
+    begin
+      @f := GetProcAddress(DLL, PWideChar(fEdit.Text));  // pobranie wskaŸnika do procedury
+      if @f = nil then raise ELoadDLLFunction.Create('Nie mo¿na za³adowaæ procedury: ' + PWideChar(fEdit.Text));
+      @df := GetProcAddress(DLL, PWideChar(dfEdit.Text));
+      if @df = nil then raise ELoadDLLFunction.Create('Nie mo¿na za³adowaæ procedury: ' + PWideChar(dfEdit.Text));
+      @d2f := GetProcAddress(DLL, PWideChar(d2fEdit.Text));
+      if @d2f = nil then raise ELoadDLLFunction.Create('Nie mo¿na za³adowaæ procedury: ' + PWideChar(d2fEdit.Text));
+      @test := GetProcAddress(DLL, 'test');  // pobranie wskaŸnika do procedury
+      @blah := GetProcAddress(DLL, 'blah');
+
+    end
+    else
+    begin
+      @fInt := GetProcAddress(DLL, PWideChar(fEdit.Text));  // pobranie wskaŸnika do procedury
+      @dfInt := GetProcAddress(DLL, PWideChar(dfEdit.Text));
+      @d2fInt := GetProcAddress(DLL, PWideChar(d2fEdit.Text));
+      @test := GetProcAddress(DLL, 'test');  // pobranie wskaŸnika do procedury
+
+      if @test = nil then raise Exception.Create('Nie mo¿na za³adowaæ procedury');
+    end;
+  except
+      on E: ELoadLibrary do
+      begin
+        Przelicz.Enabled := false;
+        MessageBox(0, PWideChar('B³¹d ³adowania biblioteki DLL: ' + NazwaEdit.text), 'B³¹d', MB_OK + MB_ICONINFORMATION);
       end;
 
-
-    end;
-  finally
-    FreeLibrary(DLL);
+      on E: ELoadDLLFunction do MessageBox(0, PWideChar(E.Message), 'B³¹d', MB_OK + MB_ICONINFORMATION);
   end;
 end;
 

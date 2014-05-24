@@ -148,33 +148,33 @@ begin
              d2fatx:=d2f(x); //48.08
 //             p:=dfatx*dfatx-2*fatx*d2fatx;
 
-             p:=imul(dfatx,dfatx);  // 424.030464
+             p:= imul(dfatx,dfatx);  // 424.030464
              q:= imul(fatx,d2fatx); // 893.595648
-             r:=imul(int_read('2'),q); // 1787,191296
+             r:= imul(int_read('2'),q); // 1787,191296
              p := isub(p,r);  // -1364.160932
              if (p.a<0) and (p.b<0)
                then st:=4
-               else if (d2fatx.a<=0) and (d2fatx.b>=0)
-                      then st:=2
-                      else begin
-                             xh:=x;
-                             w:=iabs(xh);
-                             p:=isqrt(p);
-//                             x1:=x-(dfatx-p)/d2fatx;
-                             x1 := isub(x,idiv(isub(dfatx,p),d2fatx));
-//                             x2:=x-(dfatx+p)/d2fatx;
-                             x2 := isub(x,idiv(iadd(dfatx,p),d2fatx));
-                             if more(iabs(isub(x2,xh)),iabs(isub(x1,xh)))
-                               then x:=x1
-                               else x:=x2;
-                             v:=iabs(x);
-                             if less(v,w)
-                               then v:=w;
-                             if (v.a=0) and (v.b=0)
-                               then st:=0
-                               else if (idiv(iabs(isub(x,xh)),v).a <= eps) and (idiv(iabs(isub(x,xh)),v).b <= eps)
-                                      then st:=0
-                           end
+             else if (d2fatx.a<=0) and (d2fatx.b>=0)
+               then st:=2
+             else begin
+                 xh:=x;
+                 w:=iabs(xh);
+                 p:=isqrt(p);
+                 // x1:=x-(dfatx-p)/d2fatx;
+                 x1 := isub(x,idiv(isub(dfatx,p),d2fatx));
+                 // x2:=x-(dfatx+p)/d2fatx;
+                 x2 := isub(x,idiv(iadd(dfatx,p),d2fatx));
+                 if more(iabs(isub(x2,xh)),iabs(isub(x1,xh)))
+                   then x:=x1
+                   else x:=x2;
+                 v:=iabs(x);
+                 if less(v,w)
+                   then v:=w;
+                 if (v.a=0) and (v.b=0)
+                   then st:=0
+                   else if (idiv(iabs(isub(x,xh)),v).a <= eps) and (idiv(iabs(isub(x,xh)),v).b <= eps)
+                          then st:=0
+               end
            until (it=mit) or (st<>3)
          end;
   if (st=0) or (st=3)
