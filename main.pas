@@ -79,6 +79,8 @@ var
   mit, it, st : Integer;
   intvl : interval;
   ans : interval;
+  err : Integer;
+  tmp, left, right : string;
 begin
   DLL := LoadLibrary(PChar(NazwaEdit.text)); // za≥adowanie pliku
   SzerEdit.Text := '';
@@ -92,12 +94,22 @@ begin
       @test := GetProcAddress(DLL, 'test');  // pobranie wskaünika do procedury
       @blah := GetProcAddress(DLL, 'blah');
 
-      x :=  StrToFloat(x0Edit.Text);
-      mit := StrToInt(mitEdit.Text);
-      eps := StrToFloat(epsEdit.Text);
+//      x :=  StrToFloat(x0Edit.Text);  //val
+//      mit := StrToInt(mitEdit.Text);
+//      eps := StrToFloat(epsEdit.Text);
+
+      Val(x0Edit.Text, x, err);
+
+      Val(mitEdit.Text, mit, err);
+      Val(epsEdit.Text, eps, err);
+
       try
-        RozwEdit.Text := FloatToStr(NewtonRaphson (x, f, df, d2f, mit, eps, fatx, it, st));
+//        RozwEdit.Text := FloatToStr(NewtonRaphson (x, f, df, d2f, mit, eps, fatx, it, st));
+        Str(NewtonRaphson (x, f, df, d2f, mit, eps, fatx, it, st):16:16, tmp);
+        RozwEdit.Text := tmp;
+        ShowMessage(IntToStr(st));
       except
+         ShowMessage(IntToStr(st));
          MessageBox(0, 'Podano niepoprawne dane!', 'B≥πd', MB_OK + MB_ICONINFORMATION);
       end;
 
@@ -114,16 +126,21 @@ begin
       if x0Edit2.Text = '' then xInt :=  int_read(x0Edit.Text)
       else
       begin
-        xInt.a :=  int_read(x0Edit.Text).a;
-        xInt.b := int_read(x0Edit2.Text).b;
+        xInt.a :=  left_read(x0Edit.Text);
+        xInt.b := right_read(x0Edit2.Text);
       end;
       mit := StrToInt(mitEdit.Text);
       eps := StrToFloat(epsEdit.Text);
       try
         ans := NewtonRaphsonInterval(xInt, fInt, dfInt, d2fInt, mit, eps, fatxInt, it, st);
-        RozwEdit.Text := intervalToString(ans);
-        SzerEdit.Text := FloatToStr(int_width(ans));
+        iends_to_strings(ans, left, right);
+//        RozwEdit.Text := intervalToString(ans);
+//        SzerEdit.Text := FloatToStr(int_width(ans));
+        RozwEdit.Text := '(' + left + ';' + right + ')';
+        Str(int_width(ans):25, tmp);
+        SzerEdit.Text := tmp;
       except
+
         MessageBox(0, 'Podano niepoprawne dane!', 'B≥πd', MB_OK + MB_ICONINFORMATION);
       end;
 
