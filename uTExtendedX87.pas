@@ -125,7 +125,7 @@ UNIT uTExtendedX87;
   {$DEFINE EnableHelperRoutines}       //Enable this define if you want to access any of the helper functions provided in this unit (on any platform)
   {$DEFINE EnableFWAITsEverywhere}    //Enable this define if you want FWAITs to be generated after all FPU code (similar to what the Win32 compiler does by default).
                                        //This implicitly implies all three of the following: EnableFWAIT_Arithmetic, EnableFWAIT_Division, EnableFWAIT_Transcendental
-  { $DEFINE EnableFWAIT_Arithmetic}    //Enable this define if you want FWAITs to be generated after FPU addition, subtraction, and multiplication instructions
+  {$DEFINE EnableFWAIT_Arithmetic}    //Enable this define if you want FWAITs to be generated after FPU addition, subtraction, and multiplication instructions
   {$DEFINE EnableFWAIT_Division}       //Enable this define if you want FWAITs to be generated after FPU divisions and square root operations
   {$DEFINE EnableFWAIT_Transcendental} //Enable this define if you want FWAITs to be generated after transcendental FPU instructions (logarithm and trigonometry)
 

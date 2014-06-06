@@ -1,22 +1,15 @@
 unit NewtRaph;
 
 interface
-{$IFDEF WIN64}
-// Delphi's 64 bit compiler do not support 80-bit Extended floating point
-// values on Win64 (Extended = Double on Win64).
-// The uTExtendedX87 unit provides for Win64 a replacement FPU-backed 80-bit
-// Extended floating point type called TExtendedX87. This unit is available from
-// http://blog.synopse.info/post/2011/09/13/Using-Extended-in-Delphi-XE2-64-bit
-// Be sure that one of the defines EnableHelperRoutines or
-// EnableFWAITsEverywhere is define within this unit by the $DEFINE compiler
-// directive (both these defines are given as comments in uTExtendedX87 unit
-// - see lines 126 and 128 in uTExtendedX87)
+
 uses uTExtendedX87,
   System.SysUtils,
   System.Classes,
-  Windows;
+  Windows,
+  System.Math;
+
 type Extended = TExtendedX87;
-{$ENDIF}
+
 
 type fx = function (x : Extended) : Extended;
 
@@ -29,8 +22,6 @@ function NewtonRaphson (var x     : Extended;
 
 
 implementation
-uses System.SysUtils, System.Math, Vcl.Dialogs, System.Classes, Windows;
-
 
 function NewtonRaphson (var x     : Extended;
                         f,df,d2f  : fx;
@@ -82,7 +73,7 @@ function NewtonRaphson (var x     : Extended;
 {        directive or compiled in the $F+ state.                            }
 {                                                                           }
 {---------------------------------------------------------------------------}
-var dfatx,d2fatx,p,q,r,v,w,xh,x1,x2 : Extended;
+var dfatx,d2fatx,p,v,w,xh,x1,x2 : Extended;
 begin
   if mit<1
     then st:=1
@@ -91,34 +82,31 @@ begin
            it:=0;
            repeat
              it:=it+1;
-             fatx:=f(x);      // 3.2256
-             dfatx:=df(x);    // -20.592
-             d2fatx:=d2f(x);  // 48.08
-             p:=dfatx*dfatx;  // 424.030464
-             q:=fatx*d2fatx;  // 155.086848
-             r:=2*q;          // 310.173696
-             p:=p-r;      // 113.856768
+             fatx:=f(x);
+             dfatx:=df(x);
+             d2fatx:=d2f(x);
+             p:=dfatx*dfatx-2*fatx*d2fatx;
              if p<0
                then st:=4
                else if d2fatx=0
                       then st:=2
-                      else begin
-                             xh:=x;
-                             w:=abs(xh);
-                             p:=sqrt(p);
-                             x1:=x-(dfatx-p)/d2fatx;
-                             x2:=x-(dfatx+p)/d2fatx;
-                             if abs(x2-xh)>abs(x1-xh)
-                               then x:=x1
-                               else x:=x2;
-                             v:=abs(x);
-                             if v<w
-                               then v:=w;
-                             if v=0
-                               then st:=0
-                               else if abs(x-xh)/v<=eps
-                                      then st:=0
-                           end
+             else begin
+                   xh:=x;
+                   w:=abs(xh);
+                   p:=sqrt(p);
+                   x1:=x-(dfatx-p)/d2fatx;
+                   x2:=x-(dfatx+p)/d2fatx;
+                   if abs(x2-xh)>abs(x1-xh)
+                     then x:=x1
+                     else x:=x2;
+                   v:=abs(x);
+                   if v<w
+                     then v:=w;
+                   if v=0
+                     then st:=0
+                     else if abs(x-xh)/v<=eps
+                            then st:=0
+                 end
            until (it=mit) or (st<>3)
          end;
   if (st=0) or (st=3)

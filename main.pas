@@ -94,21 +94,16 @@ begin
 
     if FloatRadio.checked then
     begin
-//      x :=  StrToFloat(x0Edit.Text);  //val
-//      mit := StrToInt(mitEdit.Text);
-//      eps := StrToFloat(epsEdit.Text);
 
       Val(x0Edit.Text, x, err);
       Val(mitEdit.Text, mit, err);
       Val(epsEdit.Text, eps, err);
 
       try
-//        RozwEdit.Text := FloatToStr(NewtonRaphson (x, f, df, d2f, mit, eps, fatx, it, st));
-        Str(NewtonRaphson (x, f, df, d2f, mit, eps, fatx, it, st):16:16, tmp);
+
+        Str(NewtonRaphson (x, f, df, d2f, mit, eps, fatx, it, st):26, tmp);
         RozwEdit.Text := tmp;
-        ShowMessage(IntToStr(st));
       except
-         ShowMessage(IntToStr(st));
          MessageBox(0, PWideChar('Podano niepoprawne dane!' + sLineBreak + 'Numer b³êdu: st = ' + IntToStr(st)), 'B³¹d', MB_OK + MB_ICONINFORMATION);
       end;
 
@@ -126,8 +121,7 @@ begin
       try
         ans := NewtonRaphsonInterval(xInt, fInt, dfInt, d2fInt, mit, eps, fatxInt, it, st);
         iends_to_strings(ans, left, right);
-//        RozwEdit.Text := intervalToString(ans);
-//        SzerEdit.Text := FloatToStr(int_width(ans));
+        //ShowMessage(IntToStr(it));
         RozwEdit.Text := '(' + left + ';' + right + ')';
         Str(int_width(ans):25, tmp);
         SzerEdit.Text := tmp;
@@ -142,7 +136,7 @@ begin
   try
     if DLL > 0 then FreeLibrary(DLL);
     DLL := LoadLibrary(PChar(NazwaEdit.text)); // za³adowanie pliku
-    if DLL = 0 then raise ELoadLibrary.Create('x');
+    if DLL = 0 then raise ELoadLibrary.Create('B³¹d wczytywania biblioteki DLL');
     Przelicz.Enabled := true;
 
     if FloatRadio.checked then
