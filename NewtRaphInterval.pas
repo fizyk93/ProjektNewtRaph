@@ -29,7 +29,11 @@ begin
   if (x.a <= 0) and (x.b >= 0) then
   begin
     iabs.a := 0;
-    iabs.b := x.b
+    if x.b > -x.a then
+      iabs.b := x.b
+    else
+      iabs.b := x.a
+
   end
   else if x.b < 0 then
   begin
@@ -37,9 +41,10 @@ begin
     iabs.b := -x.a;
   end
   else
+  begin
     iabs.a := x.a;
     iabs.b := x.b;
-  
+  end;
 end;
 
 function less(x, y : interval) : boolean;

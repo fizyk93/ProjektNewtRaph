@@ -61,7 +61,6 @@ implementation
 
 {$R *.dfm}
 
-
 procedure TOkno.FloatRadioClick(Sender: TObject);
 begin
   NazwaEdit.Text := 'funkcje.dll';
