@@ -36,6 +36,8 @@ type
     SzerEdit: TEdit;
     x0Edit2: TEdit;
     ZaladujDLL: TButton;
+    fatxEdit: TEdit;
+    fatxLabel: TLabel;
     procedure PrzeliczClick(Sender: TObject);
     procedure IntRadioClick(Sender: TObject);
     procedure FloatRadioClick(Sender: TObject);
@@ -102,6 +104,8 @@ begin
 
         Str(NewtonRaphson (x, f, df, d2f, mit, eps, fatx, it, st):26, tmp);
         RozwEdit.Text := tmp;
+        Str(fatx:25, tmp);
+        fatxEdit.Text := tmp;
       except
          MessageBox(0, PWideChar('Podano niepoprawne dane!' + sLineBreak + 'Numer b³êdu: st = ' + IntToStr(st)), 'B³¹d', MB_OK + MB_ICONINFORMATION);
       end;
@@ -124,6 +128,11 @@ begin
         RozwEdit.Text := '(' + left + ';' + right + ')';
         Str(int_width(ans):25, tmp);
         SzerEdit.Text := tmp;
+        Str(fatxInt.a:25, tmp);
+        fatxEdit.Text := '(' + tmp + ';';
+        Str(fatxInt.b:25, tmp);
+        fatxEdit.Text := fatxEdit.Text + tmp + ')';
+
       except
         MessageBox(0, PWideChar('Podano niepoprawne dane!' + sLineBreak + 'Numer b³êdu: st = ' + IntToStr(st)), 'B³¹d', MB_OK + MB_ICONINFORMATION);
       end;
