@@ -38,6 +38,8 @@ type
     ZaladujDLL: TButton;
     fatxEdit: TEdit;
     fatxLabel: TLabel;
+    itEdit: TEdit;
+    itLabel: TLabel;
     procedure PrzeliczClick(Sender: TObject);
     procedure IntRadioClick(Sender: TObject);
     procedure FloatRadioClick(Sender: TObject);
@@ -67,7 +69,7 @@ procedure TOkno.FloatRadioClick(Sender: TObject);
 begin
   NazwaEdit.Text := 'funkcje.dll';
   x0Edit2.Visible := false;
-  x0Edit.Width := 136;
+  //x0Edit.Width := 136;
   Przelicz.Enabled := false;
 end;
 
@@ -75,7 +77,7 @@ procedure TOkno.IntRadioClick(Sender: TObject);
 begin
   NazwaEdit.Text := 'funkcjeInt.dll';
   x0Edit2.Visible := true;
-  x0Edit.Width := 68;
+  //x0Edit.Width := 68;
   Przelicz.Enabled := false;
 end;
 
@@ -106,6 +108,8 @@ begin
         RozwEdit.Text := tmp;
         Str(fatx:25, tmp);
         fatxEdit.Text := tmp;
+        itEdit.Text := IntToStr(it);
+
       except
          MessageBox(0, PWideChar('Podano niepoprawne dane!' + sLineBreak + 'Numer b³êdu: st = ' + IntToStr(st)), 'B³¹d', MB_OK + MB_ICONINFORMATION);
       end;
@@ -132,11 +136,13 @@ begin
         fatxEdit.Text := '(' + tmp + ';';
         Str(fatxInt.b:25, tmp);
         fatxEdit.Text := fatxEdit.Text + tmp + ')';
+        itEdit.Text := IntToStr(it);
 
       except
         MessageBox(0, PWideChar('Podano niepoprawne dane!' + sLineBreak + 'Numer b³êdu: st = ' + IntToStr(st)), 'B³¹d', MB_OK + MB_ICONINFORMATION);
       end;
     end;
+    if st = 3 then raise Exception.Create('Nie uda³o siê osi¹gn¹æ zadanej dok³adnoœci w podanej liczbie iteracji!');
 end;
 
 procedure TOkno.ZaladujDLLClick(Sender: TObject);

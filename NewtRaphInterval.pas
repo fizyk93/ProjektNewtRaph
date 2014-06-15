@@ -140,6 +140,7 @@ function NewtonRaphsonInterval (var x     : interval;
 {                                                                           }
 {---------------------------------------------------------------------------}
 var dfatx,d2fatx,p,q,r,v,w,xh,x1,x2 : interval;
+va,vb,wa,wb : Extended;
 begin
   if mit<1
     then st:=1
@@ -163,6 +164,8 @@ begin
                then st:=2
              else begin
                  xh:=x;
+                 wa := abs(xh.a);
+                 wb := abs(xh.b);
                  w:=iabs(xh);
                  p:=isqrt(p);
                  // x1:=x-(dfatx-p)/d2fatx;
@@ -172,13 +175,21 @@ begin
                  if more(iabs(isub(x2,xh)),iabs(isub(x1,xh)))
                    then x:=x1
                    else x:=x2;
+                 va := abs(x.a);
+                 vb := abs(x.b);
+                 if va < wa then va := wa;
+                 if vb < vb then vb := wb;
+
                  v:=iabs(x);
-                 if less(v,w)
-                   then v:=w;
-                 if (v.a=0) and (v.b=0)
+//                 if less(v,w)
+//                   then v:=w;
+
+                 if (va=0) and (vb=0)
                    then st:=0
-                   else if (idiv(iabs(isub(x,xh)),v).a <= eps) and (idiv(iabs(isub(x,xh)),v).b <= eps)
-                          then st:=0
+                 else if (abs(x.a-xh.a)/va<=eps) and (abs(x.b-xh.b)/vb<=eps) then st:=0
+
+//                   else if (idiv(iabs(isub(x,xh)),v).a <= eps) and (idiv(iabs(isub(x,xh)),v).b <= eps)
+//                          then st:=0
                end
            until (it=mit) or (st<>3)
          end;
